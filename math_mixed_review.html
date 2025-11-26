@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Mixed Review: Add & Subtract 0-10</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            min-height: 100vh; color: #fff; padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: #ff00ff; margin-bottom: 10px; font-size: 2rem; }
+        .boss-badge {
+            text-align: center; margin-bottom: 20px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.2rem; font-weight: bold;
+        }
+        .stats-bar {
+            display: flex; justify-content: space-around; background: rgba(255,0,255,0.1);
+            border-radius: 10px; padding: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #00ffff; }
+        .stat-label { font-size: 0.8rem; color: #aaa; }
+        .streak { color: #ff6b35 !important; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab {
+            flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border: none;
+            border-radius: 10px; color: #fff; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.2); }
+        .tab.active { background: linear-gradient(135deg, #ff00ff, #00ffff); color: #000; font-weight: bold; }
+        .section { display: none; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 25px; }
+        .section.active { display: block; }
+        .info-box {
+            background: rgba(0,255,255,0.1); border-left: 4px solid #00ffff;
+            padding: 20px; margin-bottom: 20px; border-radius: 0 10px 10px 0;
+        }
+        .info-title { color: #00ffff; font-size: 1.3rem; margin-bottom: 15px; }
+        .info-text { font-size: 1.1rem; line-height: 1.8; color: #e0e0e0; }
+        .checklist {
+            list-style: none; margin-top: 15px;
+        }
+        .checklist li {
+            padding: 10px; margin: 5px 0; background: rgba(255,255,255,0.05);
+            border-radius: 8px; display: flex; align-items: center; gap: 10px;
+        }
+        .checklist li.done { color: #00ff88; }
+        .question-area { text-align: center; padding: 30px 0; }
+        .problem { font-size: 4rem; font-weight: bold; color: #fff; margin-bottom: 30px; }
+        .problem .operator { color: #ff00ff; }
+        .problem .operator.add { color: #00ffff; }
+        .problem .operator.sub { color: #ff6b6b; }
+        .answer-input {
+            font-size: 3rem; width: 150px; text-align: center; padding: 15px;
+            border: 3px solid #ff00ff; border-radius: 10px; background: rgba(255,255,255,0.1);
+            color: #fff; outline: none;
+        }
+        .answer-input:focus { border-color: #00ffff; box-shadow: 0 0 20px rgba(0,255,255,0.3); }
+        .submit-btn {
+            display: block; width: 200px; margin: 20px auto; padding: 15px 30px;
+            font-size: 1.2rem; background: linear-gradient(135deg, #ff00ff, #00ffff);
+            color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
+        }
+        .submit-btn:hover { transform: scale(1.05); }
+        .feedback { font-size: 1.5rem; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        .feedback.correct { display: block; background: rgba(0,255,136,0.2); color: #00ff88; }
+        .feedback.wrong { display: block; background: rgba(255,59,59,0.2); color: #ff3b3b; }
+        .progress-bar {
+            width: 100%; height: 10px; background: rgba(255,255,255,0.2);
+            border-radius: 5px; margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff); transition: width 0.3s; }
+        .question-count { text-align: center; color: #aaa; margin-bottom: 10px; }
+        .timer { text-align: center; font-size: 1.5rem; color: #ffc800; margin-bottom: 20px; }
+        .results-box { text-align: center; padding: 30px; }
+        .final-score { font-size: 4rem; font-weight: bold; color: #00ff88; margin-bottom: 10px; }
+        .final-score.needs-work { color: #ff6b35; }
+        .final-message { font-size: 1.3rem; color: #e0e0e0; margin-bottom: 30px; }
+        .retry-btn {
+            padding: 15px 40px; font-size: 1.2rem;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            color: #000; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 10px;
+        }
+        .reset-btn {
+            padding: 10px 20px; font-size: 0.9rem; background: rgba(255,255,255,0.1);
+            color: #aaa; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; margin-top: 30px;
+        }
+        .speed-rating {
+            margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;
+        }
+        .speed-rating h4 { color: #ffc800; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 BOSS LEVEL</h1>
+        <div class="boss-badge">Mixed Addition & Subtraction Review</div>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="completions">0</div>
+                <div class="stat-label">Times Beaten</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="bestScore">-</div>
+                <div class="stat-label">Best Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="bestTime">-</div>
+                <div class="stat-label">Best Time</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="mastery">🔴</div>
+                <div class="stat-label">Mastery</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('info')">📋 Requirements</button>
+            <button class="tab" onclick="showSection('test')">⚔️ Fight Boss</button>
+            <button class="tab" onclick="showSection('results')">🏆 Records</button>
+        </div>
+
+        <!-- INFO SECTION -->
+        <div id="info" class="section active">
+            <div class="info-box">
+                <div class="info-title">🎯 This Is The Final Test</div>
+                <div class="info-text">
+                    This test mixes ALL addition and subtraction facts from 0-10.<br><br>
+                    <strong>To unlock gaming rewards, you must:</strong><br>
+                    ✅ Score 90% or higher<br>
+                    ✅ Complete test 10+ times<br>
+                    ✅ Answer each question in under 5 seconds
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">✅ Skills You Need</div>
+                <ul class="checklist">
+                    <li>➕ Addition Level 1 (Adding 1, 2)</li>
+                    <li>➕ Addition Level 2 (Adding 3, 4)</li>
+                    <li>➕ Addition Level 3 (Adding 5, Doubles)</li>
+                    <li>➖ Subtraction Level 1 (Subtracting 1, 2)</li>
+                    <li>➖ Subtraction Level 2 (Subtracting 3, 4)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title">⏱️ Speed Goal</div>
+                <div class="info-text">
+                    You need to answer FAST—without counting on fingers!<br><br>
+                    <strong>25 questions in under 2 minutes = MASTERY</strong><br><br>
+                    That's about 5 seconds per question. The timer will track you!
+                </div>
+            </div>
+
+            <button class="submit-btn" onclick="showSection('test')" style="margin-top:30px;">
+                ⚔️ Start Boss Fight! →
+            </button>
+        </div>
+
+        <!-- TEST SECTION -->
+        <div id="test" class="section">
+            <div class="timer">⏱️ <span id="timerDisplay">0:00</span></div>
+            <div class="question-count">Question <span id="currentQ">1</span> of <span id="totalQ">25</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            
+            <div class="question-area">
+                <div class="problem">
+                    <span id="num1">5</span> <span class="operator" id="operator">+</span> <span id="num2">3</span> <span class="operator">=</span> <span class="operator">?</span>
+                </div>
+                <input type="number" class="answer-input" id="answerInput" autofocus>
+                <button class="submit-btn" onclick="checkAnswer()">Check Answer</button>
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="results" class="section">
+            <div class="results-box">
+                <div class="final-score" id="finalScore">--%</div>
+                <div class="final-message" id="finalMessage">Beat the boss to see your results!</div>
+                
+                <div class="speed-rating" id="speedRating" style="display:none;">
+                    <h4>⏱️ Speed Rating</h4>
+                    <p id="speedMessage"></p>
+                </div>
+                
+                <button class="retry-btn" onclick="startTest()">⚔️ Fight Again</button>
+                
+                <div style="margin-top:40px; text-align:left;">
+                    <h3 style="color:#ff00ff; margin-bottom:15px;">🏆 Battle History</h3>
+                    <div id="historyList" style="color:#aaa;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'math_mixed_review_progress';
+        
+        let progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            completions: 0, bestScore: 0, bestTime: null, history: []
+        };
+
+        let questions = [];
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let totalQuestions = 25;
+        let startTime = null;
+        let timerInterval = null;
+
+        updateStatsDisplay();
+
+        function updateStatsDisplay() {
+            document.getElementById('completions').textContent = progress.completions;
+            document.getElementById('bestScore').textContent = progress.bestScore > 0 ? progress.bestScore + '%' : '-';
+            document.getElementById('bestTime').textContent = progress.bestTime ? formatTime(progress.bestTime) : '-';
+            
+            let mastery = '🔴';
+            if (progress.completions >= 10 && progress.bestScore >= 90 && progress.bestTime && progress.bestTime <= 120) {
+                mastery = '🟢';
+            } else if (progress.completions > 0 && progress.bestScore >= 70) {
+                mastery = '🟡';
+            }
+            document.getElementById('mastery').textContent = mastery;
+
+            let historyHTML = '';
+            progress.history.slice(-10).reverse().forEach((h, i) => {
+                historyHTML += `<div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    Battle ${progress.history.length - i}: ${h.score}% in ${formatTime(h.time)} - ${h.date}
+                </div>`;
+            });
+            document.getElementById('historyList').innerHTML = historyHTML || 'No battles yet.';
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+            if (section === 'test') startTest();
+        }
+
+        function generateQuestions() {
+            questions = [];
+            
+            // Addition facts (0-10)
+            for (let a = 0; a <= 10; a++) {
+                for (let b = 0; b <= 10; b++) {
+                    if (a + b <= 20) {
+                        questions.push({ num1: a, num2: b, op: '+' });
+                    }
+                }
+            }
+            
+            // Subtraction facts (results 0-10)
+            for (let a = 0; a <= 15; a++) {
+                for (let b = 0; b <= a; b++) {
+                    if (a - b <= 10 && a <= 15) {
+                        questions.push({ num1: a, num2: b, op: '-' });
+                    }
+                }
+            }
+            
+            questions = questions.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+        }
+
+        function startTest() {
+            generateQuestions();
+            currentQuestion = 0;
+            correctAnswers = 0;
+            startTime = Date.now();
+            document.getElementById('totalQ').textContent = totalQuestions;
+            
+            // Start timer
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            showQuestion();
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('timerDisplay').textContent = formatTime(elapsed);
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= totalQuestions) { finishTest(); return; }
+            const q = questions[currentQuestion];
+            document.getElementById('num1').textContent = q.num1;
+            document.getElementById('num2').textContent = q.num2;
+            const opEl = document.getElementById('operator');
+            opEl.textContent = q.op;
+            opEl.className = 'operator ' + (q.op === '+' ? 'add' : 'sub');
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = (currentQuestion / totalQuestions * 100) + '%';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            const q = questions[currentQuestion];
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const correctAnswer = q.op === '+' ? q.num1 + q.num2 : q.num1 - q.num2;
+            const feedback = document.getElementById('feedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = '⚠️ Enter a number!';
+                feedback.className = 'feedback wrong';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                correctAnswers++;
+                feedback.textContent = '✅ Correct!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `❌ ${q.num1} ${q.op} ${q.num2} = ${correctAnswer}`;
+                feedback.className = 'feedback wrong';
+            }
+            feedback.style.display = 'block';
+            
+            setTimeout(() => { currentQuestion++; showQuestion(); }, 1200);
+        }
+
+        function finishTest() {
+            clearInterval(timerInterval);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const score = Math.round(correctAnswers / totalQuestions * 100);
+            
+            progress.completions++;
+            if (score > progress.bestScore) progress.bestScore = score;
+            if (!progress.bestTime || elapsed < progress.bestTime) progress.bestTime = elapsed;
+            progress.history.push({
+                score: score, correct: correctAnswers, total: totalQuestions,
+                time: elapsed, date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            updateStatsDisplay();
+            
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = score + '%';
+            finalScore.className = score >= 90 ? 'final-score' : 'final-score needs-work';
+            
+            let message = '';
+            if (score === 100 && elapsed <= 120) message = '🏆 LEGENDARY! Perfect score in under 2 minutes!';
+            else if (score === 100) message = '🏆 PERFECT SCORE! Now try to go faster!';
+            else if (score >= 90) message = '🌟 Boss Defeated! Great job!';
+            else if (score >= 70) message = '👍 Good fight! Train more and try again.';
+            else message = '💪 Keep training! Review your facts and fight again.';
+            document.getElementById('finalMessage').textContent = message;
+            
+            // Speed rating
+            const speedRating = document.getElementById('speedRating');
+            speedRating.style.display = 'block';
+            let speedMsg = '';
+            const avgTime = elapsed / totalQuestions;
+            if (avgTime <= 3) speedMsg = '⚡ LIGHTNING FAST! Under 3 seconds per question!';
+            else if (avgTime <= 5) speedMsg = '🚀 Great speed! Under 5 seconds per question.';
+            else if (avgTime <= 8) speedMsg = '👍 Good pace. Try to get under 5 seconds per question.';
+            else speedMsg = '🐢 Too slow. Practice more to build speed!';
+            document.getElementById('speedMessage').textContent = speedMsg + ` (${avgTime.toFixed(1)}s avg)`;
+            
+            showSection('results');
+        }
+
+        function resetProgress() {
+            if (confirm('Erase all progress?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                progress = { completions: 0, bestScore: 0, bestTime: null, history: [] };
+                updateStatsDisplay();
+            }
+        }
+
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkAnswer();
+        });
+    </script>
+</body>
+</html>
