@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Practice: Level 1 Passages</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; color: #ffd700; margin-bottom: 10px; font-size: 2rem; font-family: 'Segoe UI', sans-serif; }
+        .stats-bar {
+            display: flex; justify-content: space-around; background: rgba(255,215,0,0.1);
+            border-radius: 10px; padding: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #ffd700; }
+        .stat-label { font-size: 0.8rem; color: #aaa; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; font-family: 'Segoe UI', sans-serif; }
+        .tab {
+            flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border: none;
+            border-radius: 10px; color: #fff; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.2); }
+        .tab.active { background: #ffd700; color: #1a1a2e; font-weight: bold; }
+        .section { display: none; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 25px; }
+        .section.active { display: block; }
+        
+        /* Reading specific styles */
+        .passage-container {
+            background: #fffef5;
+            color: #222;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            line-height: 2;
+            margin-bottom: 20px;
+        }
+        .passage-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .passage-text {
+            text-align: left;
+        }
+        .passage-text p {
+            margin-bottom: 15px;
+            text-indent: 30px;
+        }
+        .read-aloud-tip {
+            background: rgba(255,215,0,0.2);
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+        }
+        .questions-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .question-box {
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .answer-btn {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .answer-btn:hover { background: rgba(255,215,0,0.2); border-color: #ffd700; }
+        .answer-btn.correct { background: rgba(0,255,136,0.3); border-color: #00ff88; }
+        .answer-btn.wrong { background: rgba(255,59,59,0.3); border-color: #ff3b3b; }
+        .answer-btn.show-correct { background: rgba(0,255,136,0.2); border-color: #00ff88; }
+        .answer-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+        
+        .feedback-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .feedback-box.correct { display: block; background: rgba(0,255,136,0.2); color: #00ff88; }
+        .feedback-box.wrong { display: block; background: rgba(255,59,59,0.2); color: #ff3b3b; }
+        
+        .next-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        .next-btn:hover { background: #ffed4a; transform: scale(1.05); }
+        
+        .results-box { text-align: center; padding: 30px; font-family: 'Segoe UI', sans-serif; }
+        .final-score { font-size: 4rem; font-weight: bold; color: #ffd700; margin-bottom: 10px; }
+        .final-score.needs-work { color: #ff6b35; }
+        .final-message { font-size: 1.3rem; color: #e0e0e0; margin-bottom: 30px; }
+        .retry-btn {
+            padding: 15px 40px; font-size: 1.2rem; background: #ffd700; color: #1a1a2e;
+            border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 10px;
+        }
+        .reset-btn {
+            padding: 10px 20px; font-size: 0.9rem; background: rgba(255,255,255,0.1);
+            color: #aaa; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; margin-top: 30px;
+        }
+        
+        .passage-select {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .passage-card {
+            background: rgba(255,255,255,0.08);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .passage-card:hover {
+            border-color: #ffd700;
+            background: rgba(255,215,0,0.1);
+        }
+        .passage-card h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        .passage-card p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        .passage-card .status {
+            margin-top: 10px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Reading Practice</h1>
+        <p style="text-align:center; color:#aaa; margin-bottom:20px; font-family: sans-serif;">Read the story, answer questions</p>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="completions">0</div>
+                <div class="stat-label">Passages Read</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="avgScore">-</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="mastery">🔴</div>
+                <div class="stat-label">Mastery</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('select')">📖 Choose Story</button>
+            <button class="tab" onclick="showSection('read')">📕 Read</button>
+            <button class="tab" onclick="showSection('results')">📊 My Progress</button>
+        </div>
+
+        <!-- SELECT SECTION -->
+        <div id="select" class="section active">
+            <h2 style="text-align:center; color:#ffd700; margin-bottom:20px;">Choose a Story to Read</h2>
+            <div class="passage-select" id="passageSelect">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+        <!-- READ SECTION -->
+        <div id="read" class="section">
+            <div class="read-aloud-tip">
+                📢 <strong>READ THIS STORY OUT LOUD!</strong><br>
+                Reading out loud helps you catch mistakes and understand better.
+            </div>
+            
+            <div class="passage-container">
+                <div class="passage-title" id="passageTitle">Title</div>
+                <div class="passage-text" id="passageText">
+                    <!-- Passage content -->
+                </div>
+            </div>
+            
+            <button class="next-btn" onclick="showQuestions()" id="startQuestionsBtn">
+                I Read It! Show Questions →
+            </button>
+            
+            <div class="questions-container" id="questionsContainer" style="display:none;">
+                <h3 style="color:#ffd700; margin-bottom:20px; text-align:center;">Answer These Questions</h3>
+                <div id="questionsList">
+                    <!-- Questions generated by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="results" class="section">
+            <div class="results-box">
+                <div class="final-score" id="finalScore">--%</div>
+                <div class="final-message" id="finalMessage">Read some passages to see your results!</div>
+                
+                <div style="margin-top:40px; text-align:left;">
+                    <h3 style="color:#ffd700; margin-bottom:15px;">📈 Your Reading History</h3>
+                    <div id="historyList" style="color:#aaa;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'reading_passages_progress';
+        
+        // Passages with comprehension questions (2nd-3rd grade level)
+        const passages = [
+            {
+                id: 1,
+                title: "Max the Dog",
+                text: `<p>Max is a big brown dog. He lives with a boy named Tom. Every day, Max and Tom play in the yard.</p>
+                       <p>Max likes to run fast. He likes to catch balls. Tom throws the ball, and Max runs to get it. Max always brings the ball back to Tom.</p>
+                       <p>At night, Max sleeps by Tom's bed. Max is Tom's best friend.</p>`,
+                questions: [
+                    {
+                        q: "What color is Max?",
+                        options: ["Black", "Brown", "White", "Red"],
+                        correct: 1
+                    },
+                    {
+                        q: "What does Max like to catch?",
+                        options: ["Sticks", "Frogs", "Balls", "Cats"],
+                        correct: 2
+                    },
+                    {
+                        q: "Where does Max sleep?",
+                        options: ["Outside", "In the kitchen", "By Tom's bed", "On the couch"],
+                        correct: 2
+                    },
+                    {
+                        q: "Who is Max's best friend?",
+                        options: ["Another dog", "A cat", "Tom", "Mom"],
+                        correct: 2
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "The Red Bike",
+                text: `<p>Kim got a new bike for her birthday. The bike is red and shiny. Kim was so happy!</p>
+                       <p>Dad helped Kim learn to ride. At first, Kim fell down. But she did not give up. She got back on and tried again.</p>
+                       <p>After many tries, Kim could ride by herself! Now Kim rides her bike every day after school.</p>`,
+                questions: [
+                    {
+                        q: "What did Kim get for her birthday?",
+                        options: ["A doll", "A bike", "A book", "A game"],
+                        correct: 1
+                    },
+                    {
+                        q: "What color is the bike?",
+                        options: ["Blue", "Green", "Red", "Yellow"],
+                        correct: 2
+                    },
+                    {
+                        q: "Who helped Kim learn to ride?",
+                        options: ["Mom", "Her friend", "Dad", "Her brother"],
+                        correct: 2
+                    },
+                    {
+                        q: "What happened when Kim first tried to ride?",
+                        options: ["She rode fast", "She fell down", "She got scared", "She went home"],
+                        correct: 1
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "The Lost Cat",
+                text: `<p>One day, Sam's cat ran away. The cat's name was Mittens. Sam was very sad.</p>
+                       <p>Sam looked all over for Mittens. He looked under the bed. He looked in the closet. He looked outside in the yard. But Mittens was not there.</p>
+                       <p>Then Sam heard a sound. Meow! It came from a tree. Mittens was up in the tree! Dad got a ladder and helped Mittens come down. Sam was so glad to have his cat back.</p>`,
+                questions: [
+                    {
+                        q: "What is the cat's name?",
+                        options: ["Max", "Mittens", "Fluffy", "Tom"],
+                        correct: 1
+                    },
+                    {
+                        q: "Where did Sam NOT look for the cat?",
+                        options: ["Under the bed", "In the closet", "In the garage", "In the yard"],
+                        correct: 2
+                    },
+                    {
+                        q: "Where was Mittens hiding?",
+                        options: ["Under a car", "In a box", "Up in a tree", "Behind the house"],
+                        correct: 2
+                    },
+                    {
+                        q: "How did Mittens get down?",
+                        options: ["She jumped", "Sam climbed up", "Dad used a ladder", "She fell"],
+                        correct: 2
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "Pizza Night",
+                text: `<p>Every Friday is pizza night at Ben's house. The whole family makes pizza together.</p>
+                       <p>Mom makes the dough. Dad puts on the sauce. Ben adds the cheese. His sister Lily puts on the pepperoni.</p>
+                       <p>They bake the pizza in the oven. When it is done, they all sit down and eat together. Ben thinks Friday is the best day of the week!</p>`,
+                questions: [
+                    {
+                        q: "When is pizza night?",
+                        options: ["Monday", "Wednesday", "Friday", "Sunday"],
+                        correct: 2
+                    },
+                    {
+                        q: "Who makes the dough?",
+                        options: ["Ben", "Dad", "Mom", "Lily"],
+                        correct: 2
+                    },
+                    {
+                        q: "What does Ben add to the pizza?",
+                        options: ["Sauce", "Cheese", "Pepperoni", "Mushrooms"],
+                        correct: 1
+                    },
+                    {
+                        q: "What does the family do after the pizza is done?",
+                        options: ["Watch TV", "Go to bed", "Eat together", "Go outside"],
+                        correct: 2
+                    }
+                ]
+            },
+            {
+                id: 5,
+                title: "The Big Game",
+                text: `<p>Today was the big soccer game. Jake was nervous. His team needed to win this game.</p>
+                       <p>The game was close. Both teams played hard. Then Jake got the ball. He ran fast down the field. He kicked the ball hard. Goal!</p>
+                       <p>Jake's team won the game! All his friends cheered. Jake felt so proud. It was the best day ever.</p>`,
+                questions: [
+                    {
+                        q: "What sport was Jake playing?",
+                        options: ["Baseball", "Basketball", "Soccer", "Football"],
+                        correct: 2
+                    },
+                    {
+                        q: "How did Jake feel before the game?",
+                        options: ["Happy", "Nervous", "Angry", "Tired"],
+                        correct: 1
+                    },
+                    {
+                        q: "What did Jake do to help his team win?",
+                        options: ["He blocked a shot", "He scored a goal", "He passed the ball", "He stopped playing"],
+                        correct: 1
+                    },
+                    {
+                        q: "How did Jake feel at the end?",
+                        options: ["Sad", "Scared", "Proud", "Bored"],
+                        correct: 2
+                    }
+                ]
+            }
+        ];
+
+        let progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            completions: 0,
+            totalScore: 0,
+            passagesDone: {},
+            history: []
+        };
+
+        let currentPassage = null;
+        let currentAnswers = [];
+        let questionsAnswered = 0;
+
+        updateStatsDisplay();
+        renderPassageSelect();
+
+        function updateStatsDisplay() {
+            document.getElementById('completions').textContent = progress.completions;
+            const avgScore = progress.completions > 0 ? Math.round(progress.totalScore / progress.completions) : 0;
+            document.getElementById('avgScore').textContent = avgScore > 0 ? avgScore + '%' : '-';
+            
+            let mastery = '🔴';
+            if (progress.completions >= 5 && avgScore >= 80) mastery = '🟢';
+            else if (progress.completions > 0) mastery = '🟡';
+            document.getElementById('mastery').textContent = mastery;
+
+            let historyHTML = '';
+            progress.history.slice(-10).reverse().forEach((h, i) => {
+                historyHTML += `<div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    "${h.title}" - ${h.score}% (${h.correct}/${h.total}) - ${h.date}
+                </div>`;
+            });
+            document.getElementById('historyList').innerHTML = historyHTML || 'No passages read yet.';
+        }
+
+        function renderPassageSelect() {
+            const container = document.getElementById('passageSelect');
+            container.innerHTML = passages.map(p => {
+                const done = progress.passagesDone[p.id];
+                const status = done ? '✅' : '📖';
+                return `
+                    <div class="passage-card" onclick="selectPassage(${p.id})">
+                        <h3>${p.title}</h3>
+                        <p>${p.questions.length} questions</p>
+                        <div class="status">${status}</div>
+                        ${done ? `<p style="color:#00ff88; font-size:0.8rem;">Best: ${done}%</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectPassage(id) {
+            currentPassage = passages.find(p => p.id === id);
+            document.getElementById('passageTitle').textContent = currentPassage.title;
+            document.getElementById('passageText').innerHTML = currentPassage.text;
+            document.getElementById('questionsContainer').style.display = 'none';
+            document.getElementById('startQuestionsBtn').style.display = 'block';
+            currentAnswers = [];
+            questionsAnswered = 0;
+            showSection('read');
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+        }
+
+        function showQuestions() {
+            document.getElementById('startQuestionsBtn').style.display = 'none';
+            document.getElementById('questionsContainer').style.display = 'block';
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsList');
+            container.innerHTML = currentPassage.questions.map((q, i) => `
+                <div class="question-box" id="question-${i}">
+                    <div class="question-text"><strong>Question ${i + 1}:</strong> ${q.q}</div>
+                    <div class="answer-options">
+                        ${q.options.map((opt, j) => `
+                            <button class="answer-btn" onclick="answerQuestion(${i}, ${j})">${opt}</button>
+                        `).join('')}
+                    </div>
+                    <div class="feedback-box" id="feedback-${i}"></div>
+                </div>
+            `).join('') + `<button class="next-btn" id="finishBtn" style="display:none;" onclick="finishPassage()">See My Results →</button>`;
+        }
+
+        function answerQuestion(qIndex, aIndex) {
+            const q = currentPassage.questions[qIndex];
+            const qBox = document.getElementById(`question-${qIndex}`);
+            const buttons = qBox.querySelectorAll('.answer-btn');
+            const feedback = document.getElementById(`feedback-${qIndex}`);
+            
+            // Disable all buttons
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === q.correct) {
+                    btn.classList.add('show-correct');
+                }
+                if (i === aIndex && aIndex !== q.correct) {
+                    btn.classList.add('wrong');
+                }
+                if (i === aIndex && aIndex === q.correct) {
+                    btn.classList.add('correct');
+                }
+            });
+            
+            const isCorrect = aIndex === q.correct;
+            currentAnswers[qIndex] = isCorrect;
+            
+            if (isCorrect) {
+                feedback.textContent = '✅ Correct! Great reading!';
+                feedback.className = 'feedback-box correct';
+            } else {
+                feedback.textContent = `❌ The correct answer is: ${q.options[q.correct]}`;
+                feedback.className = 'feedback-box wrong';
+            }
+            
+            questionsAnswered++;
+            if (questionsAnswered === currentPassage.questions.length) {
+                document.getElementById('finishBtn').style.display = 'block';
+            }
+        }
+
+        function finishPassage() {
+            const correct = currentAnswers.filter(a => a).length;
+            const total = currentPassage.questions.length;
+            const score = Math.round(correct / total * 100);
+            
+            progress.completions++;
+            progress.totalScore += score;
+            if (!progress.passagesDone[currentPassage.id] || score > progress.passagesDone[currentPassage.id]) {
+                progress.passagesDone[currentPassage.id] = score;
+            }
+            progress.history.push({
+                title: currentPassage.title,
+                score: score,
+                correct: correct,
+                total: total,
+                date: new Date().toLocaleDateString()
+            });
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            updateStatsDisplay();
+            renderPassageSelect();
+            
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = score + '%';
+            finalScore.className = score >= 75 ? 'final-score' : 'final-score needs-work';
+            
+            let message = '';
+            if (score === 100) message = `🏆 PERFECT! You understood "${currentPassage.title}" completely!`;
+            else if (score >= 75) message = '🌟 Great job! You understood most of the story.';
+            else message = '📚 Try reading the story again more carefully.';
+            document.getElementById('finalMessage').textContent = message;
+            
+            showSection('results');
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure? This will erase all your reading progress.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                progress = { completions: 0, totalScore: 0, passagesDone: {}, history: [] };
+                updateStatsDisplay();
+                renderPassageSelect();
+                document.getElementById('finalScore').textContent = '--%';
+                document.getElementById('finalMessage').textContent = 'Progress reset. Start fresh!';
+            }
+        }
+    </script>
+</body>
+</html>
