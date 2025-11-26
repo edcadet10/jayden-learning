@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jayden's Learning Hub</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { text-align: center; padding: 30px 0; }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: #aaa; margin-top: 10px; }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: #00ff88; }
+        .stat-label { color: #888; font-size: 0.85rem; }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: #00d9ff;
+            margin: 35px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(0,217,255,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 15px;
+        }
+        
+        a.test-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 18px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.2s;
+        }
+        a.test-card:hover {
+            border-color: #00d9ff;
+            background: rgba(0,217,255,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .test-card.math-add { border-left: 4px solid #00d9ff; }
+        .test-card.math-sub { border-left: 4px solid #ff6b6b; }
+        .test-card.math-mult { border-left: 4px solid #ffd700; }
+        .test-card.math-mix { border-left: 4px solid #ff00ff; }
+        .test-card.reading { border-left: 4px solid #00ff88; }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .test-title { font-weight: bold; font-size: 1.05rem; }
+        .test-status { font-size: 1.3rem; }
+        .test-desc { color: #aaa; font-size: 0.9rem; }
+        
+        .progress-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .progress-row .best { color: #00ff88; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+        }
+        
+        .reward-box {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,100,0,0.1));
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .reward-box h3 { color: #ffd700; margin-bottom: 10px; }
+        .gaming-time { font-size: 2.5rem; font-weight: bold; color: #00ff88; }
+        .gaming-time.zero { color: #ff6b6b; }
+        .reward-note { color: #aaa; font-size: 0.85rem; margin-top: 10px; }
+        
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            color: #444;
+        }
+        .reset-btn {
+            background: transparent;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .reset-btn:hover { background: rgba(255,68,68,0.2); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 Jayden's Learning Hub</h1>
+            <p class="subtitle">Master the basics, unlock gaming time!</p>
+        </header>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="totalMastered">0</div>
+                <div class="stat-label">Tests Mastered</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="totalCompletions">0</div>
+                <div class="stat-label">Total Completions</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="avgScore">-</div>
+                <div class="stat-label">Average Score</div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">➕ Addition</h2>
+        <div class="test-grid">
+            <a href="addition_level1.html" class="test-card math-add" data-key="addition_level1_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 1: +1 and +2</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">Adding 1 and 2 to any number</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+            
+            <a href="addition_level2.html" class="test-card math-add" data-key="addition_level2_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 2: +3 and +4</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">Adding 3 and 4 to any number</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+            
+            <a href="addition_level3.html" class="test-card math-add" data-key="addition_level3_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 3: +5 & Doubles</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">Adding 5 and doubles (1+1 to 10+10)</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+        </div>
+        
+        <h2 class="section-title">➖ Subtraction</h2>
+        <div class="test-grid">
+            <a href="subtraction_level1.html" class="test-card math-sub" data-key="subtraction_level1_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 1: -1 and -2</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">Subtracting 1 and 2</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+            
+            <a href="subtraction_level2.html" class="test-card math-sub" data-key="subtraction_level2_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 2: -3 and -4</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">Subtracting 3 and 4</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+        </div>
+        
+        <h2 class="section-title">✖️ Multiplication</h2>
+        <div class="test-grid">
+            <a href="multiplication_level1.html" class="test-card math-mult" data-key="multiplication_level1_progress">
+                <div class="test-header">
+                    <span class="test-title">Level 1: ×1, ×2, ×10</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">The easiest multiplication facts</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+        </div>
+        
+        <h2 class="section-title">🏆 Boss Battles</h2>
+        <div class="test-grid">
+            <a href="math_mixed_review.html" class="test-card math-mix" data-key="math_mixed_review_progress">
+                <div class="test-header">
+                    <span class="test-title">Mixed Math Review</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">All addition & subtraction - TIMED!</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+        </div>
+        
+        <h2 class="section-title">📖 Reading</h2>
+        <div class="test-grid">
+            <a href="sight_words_level1.html" class="test-card reading" data-key="sight_words_level1_progress">
+                <div class="test-header">
+                    <span class="test-title">Sight Words Level 1</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">40 most common words</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+            
+            <a href="reading_passages_level1.html" class="test-card reading" data-key="reading_passages_level1_progress">
+                <div class="test-header">
+                    <span class="test-title">Reading Passages</span>
+                    <span class="test-status">🔴</span>
+                </div>
+                <div class="test-desc">5 stories with comprehension questions</div>
+                <div class="progress-row">
+                    <span>Completions: <span class="completions">0</span>/10</span>
+                    <span class="best">Best: -</span>
+                </div>
+                <div class="progress-bar"><div class="fill" style="width: 0%"></div></div>
+            </a>
+        </div>
+        
+        <div class="reward-box">
+            <h3>🎮 Gaming Time Earned Today</h3>
+            <div class="gaming-time" id="gamingTime">0 min</div>
+            <p class="reward-note">Complete daily schedule = 60 min | Master a test = +30 min | Beat personal best = +15 min</p>
+        </div>
+        
+        <footer>
+            <button class="reset-btn" onclick="resetAll()">Reset All Progress</button>
+        </footer>
+    </div>
+    
+    <script>
+        const testKeys = [
+            'addition_level1_progress',
+            'addition_level2_progress', 
+            'addition_level3_progress',
+            'subtraction_level1_progress',
+            'subtraction_level2_progress',
+            'multiplication_level1_progress',
+            'math_mixed_review_progress',
+            'sight_words_level1_progress',
+            'reading_passages_level1_progress'
+        ];
+        
+        function loadProgress() {
+            let totalMastered = 0;
+            let totalCompletions = 0;
+            let allScores = [];
+            
+            document.querySelectorAll('.test-card').forEach(card => {
+                const key = card.dataset.key;
+                if (!key) return;
+                
+                const data = JSON.parse(localStorage.getItem(key) || '{}');
+                const completions = data.completions || 0;
+                const bestScore = data.bestScore || 0;
+                const isMastered = completions >= 10 && bestScore >= 90;
+                
+                // Update card
+                card.querySelector('.completions').textContent = completions;
+                card.querySelector('.best').textContent = bestScore > 0 ? `Best: ${bestScore}%` : 'Best: -';
+                card.querySelector('.test-status').textContent = 
+                    isMastered ? '🟢' : (completions > 0 ? '🟡' : '🔴');
+                card.querySelector('.fill').style.width = Math.min(completions * 10, 100) + '%';
+                
+                // Aggregate stats
+                if (isMastered) totalMastered++;
+                totalCompletions += completions;
+                if (bestScore > 0) allScores.push(bestScore);
+            });
+            
+            document.getElementById('totalMastered').textContent = totalMastered;
+            document.getElementById('totalCompletions').textContent = totalCompletions;
+            document.getElementById('avgScore').textContent = 
+                allScores.length > 0 ? Math.round(allScores.reduce((a,b) => a+b, 0) / allScores.length) + '%' : '-';
+            
+            // Gaming time calculation
+            const gamingMin = totalMastered * 30;
+            const gamingEl = document.getElementById('gamingTime');
+            gamingEl.textContent = gamingMin + ' min';
+            gamingEl.className = 'gaming-time' + (gamingMin === 0 ? ' zero' : '');
+        }
+        
+        function resetAll() {
+            if (confirm('Are you sure? This will erase ALL progress!')) {
+                testKeys.forEach(key => localStorage.removeItem(key));
+                loadProgress();
+            }
+        }
+        
+        loadProgress();
+    </script>
+</body>
+</html>
