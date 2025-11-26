@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sight Words Level 1: Most Common Words</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2e1a 0%, #163e16 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { text-align: center; color: #88ff88; margin-bottom: 10px; font-size: 2rem; }
+        .stats-bar {
+            display: flex; justify-content: space-around; background: rgba(136,255,136,0.1);
+            border-radius: 10px; padding: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        }
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #00ff88; }
+        .stat-label { font-size: 0.8rem; color: #aaa; }
+        .streak { color: #ffc800 !important; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab {
+            flex: 1; padding: 15px; background: rgba(255,255,255,0.1); border: none;
+            border-radius: 10px; color: #fff; font-size: 1rem; cursor: pointer; transition: all 0.3s;
+        }
+        .tab:hover { background: rgba(255,255,255,0.2); }
+        .tab.active { background: #88ff88; color: #1a1a2e; font-weight: bold; }
+        .section { display: none; background: rgba(255,255,255,0.05); border-radius: 15px; padding: 25px; }
+        .section.active { display: block; }
+        .lesson-box {
+            background: rgba(136,255,136,0.1); border-left: 4px solid #88ff88;
+            padding: 20px; margin-bottom: 20px; border-radius: 0 10px 10px 0;
+        }
+        .lesson-title { color: #88ff88; font-size: 1.3rem; margin-bottom: 15px; }
+        .lesson-text { font-size: 1.1rem; line-height: 1.8; color: #e0e0e0; }
+        .word-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            margin: 20px 0;
+        }
+        .word-card {
+            background: #2a3a2a; border-radius: 10px; padding: 15px;
+            text-align: center; font-size: 1.3rem; font-weight: bold;
+        }
+        .tip-box {
+            background: rgba(255,200,0,0.2); border-left: 4px solid #ffc800;
+            padding: 15px; margin-top: 20px; border-radius: 0 10px 10px 0;
+        }
+        .tip-box strong { color: #ffc800; }
+        .question-area { text-align: center; padding: 30px 0; }
+        .word-display {
+            font-size: 5rem; font-weight: bold; color: #fff; margin-bottom: 30px;
+            padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px;
+            display: inline-block; min-width: 300px;
+        }
+        .options-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;
+            max-width: 500px; margin: 0 auto;
+        }
+        .option-btn {
+            padding: 20px; font-size: 1.3rem; background: rgba(255,255,255,0.1);
+            color: #fff; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px; cursor: pointer; transition: all 0.3s;
+        }
+        .option-btn:hover { background: rgba(136,255,136,0.3); border-color: #88ff88; }
+        .option-btn.correct { background: rgba(0,255,136,0.3); border-color: #00ff88; }
+        .option-btn.wrong { background: rgba(255,59,59,0.3); border-color: #ff3b3b; }
+        .feedback { font-size: 1.5rem; padding: 20px; border-radius: 10px; margin-top: 20px; display: none; }
+        .feedback.correct { display: block; background: rgba(0,255,136,0.2); color: #00ff88; }
+        .feedback.wrong { display: block; background: rgba(255,59,59,0.2); color: #ff3b3b; }
+        .progress-bar {
+            width: 100%; height: 10px; background: rgba(255,255,255,0.2);
+            border-radius: 5px; margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #88ff88, #00ff88); transition: width 0.3s; }
+        .question-count { text-align: center; color: #aaa; margin-bottom: 10px; }
+        .results-box { text-align: center; padding: 30px; }
+        .final-score { font-size: 4rem; font-weight: bold; color: #00ff88; margin-bottom: 10px; }
+        .final-score.needs-work { color: #ffc800; }
+        .final-message { font-size: 1.3rem; color: #e0e0e0; margin-bottom: 30px; }
+        .retry-btn {
+            padding: 15px 40px; font-size: 1.2rem; background: #ffc800; color: #1a1a2e;
+            border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin: 10px;
+        }
+        .retry-btn:hover { background: #ffdd44; }
+        .reset-btn {
+            padding: 10px 20px; font-size: 0.9rem; background: rgba(255,255,255,0.1);
+            color: #aaa; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; margin-top: 30px;
+        }
+        .instruction-text {
+            text-align: center; color: #aaa; font-size: 1.1rem; margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Sight Words Level 1</h1>
+        <p style="text-align:center; color:#aaa; margin-bottom:20px;">Most Common Words</p>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="completions">0</div>
+                <div class="stat-label">Times Completed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="bestScore">-</div>
+                <div class="stat-label">Best Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value streak" id="streak">0 🔥</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="mastery">🔴</div>
+                <div class="stat-label">Mastery</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('learn')">📚 Learn First</button>
+            <button class="tab" onclick="showSection('test')">✏️ Take Test</button>
+            <button class="tab" onclick="showSection('results')">📊 My Progress</button>
+        </div>
+
+        <!-- LEARN SECTION -->
+        <div id="learn" class="section active">
+            <div class="lesson-box">
+                <div class="lesson-title">🎯 What Are Sight Words?</div>
+                <div class="lesson-text">
+                    <strong>Sight words</strong> are words you should recognize INSTANTLY—without sounding them out.<br><br>
+                    These words appear in almost everything you read. If you know them by sight, reading becomes SO much easier and faster!
+                </div>
+            </div>
+
+            <div class="lesson-box">
+                <div class="lesson-title">📝 Today's Words</div>
+                <div class="lesson-text">Study these words. Try to recognize them instantly!</div>
+                <div class="word-grid">
+                    <div class="word-card">the</div>
+                    <div class="word-card">and</div>
+                    <div class="word-card">is</div>
+                    <div class="word-card">it</div>
+                    <div class="word-card">to</div>
+                    <div class="word-card">in</div>
+                    <div class="word-card">he</div>
+                    <div class="word-card">was</div>
+                    <div class="word-card">for</div>
+                    <div class="word-card">on</div>
+                    <div class="word-card">are</div>
+                    <div class="word-card">as</div>
+                    <div class="word-card">with</div>
+                    <div class="word-card">his</div>
+                    <div class="word-card">they</div>
+                    <div class="word-card">at</div>
+                    <div class="word-card">be</div>
+                    <div class="word-card">this</div>
+                    <div class="word-card">from</div>
+                    <div class="word-card">or</div>
+                </div>
+            </div>
+
+            <div class="lesson-box">
+                <div class="lesson-title">🔍 Look Carefully</div>
+                <div class="lesson-text">
+                    Some words look similar. Don't confuse them!<br><br>
+                    <strong>the</strong> vs <strong>they</strong> — "they" has a Y at the end<br>
+                    <strong>is</strong> vs <strong>it</strong> — "it" has a T at the end<br>
+                    <strong>on</strong> vs <strong>or</strong> — "or" has an R at the end<br>
+                    <strong>for</strong> vs <strong>from</strong> — "from" has an M at the end
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 How to Practice:</strong><br>
+                1. Look at the word<br>
+                2. Say it out loud<br>
+                3. Look away and spell it<br>
+                4. Check if you're right<br><br>
+                Do this with each word 3 times before taking the test!
+            </div>
+
+            <button class="submit-btn" onclick="showSection('test')" style="margin-top:30px; background:#88ff88;">
+                I'm Ready to Practice! →
+            </button>
+        </div>
+
+        <!-- TEST SECTION -->
+        <div id="test" class="section">
+            <div class="question-count">Question <span id="currentQ">1</span> of <span id="totalQ">20</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            
+            <div class="instruction-text">Read the word. Then click the SAME word below.</div>
+            
+            <div class="question-area">
+                <div class="word-display" id="targetWord">the</div>
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be generated by JS -->
+                </div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="results" class="section">
+            <div class="results-box">
+                <div class="final-score" id="finalScore">--%</div>
+                <div class="final-message" id="finalMessage">Complete a test to see your results!</div>
+                <button class="retry-btn" onclick="startTest()">🔄 Take Test Again</button>
+                
+                <div style="margin-top:40px; text-align:left;">
+                    <h3 style="color:#88ff88; margin-bottom:15px;">📈 Your History</h3>
+                    <div id="historyList" style="color:#aaa;"></div>
+                </div>
+
+                <div style="margin-top:30px; text-align:left;">
+                    <h3 style="color:#ff6b6b; margin-bottom:15px;">❌ Words to Review</h3>
+                    <div id="missedWords" style="color:#aaa;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'sight_words_level1_progress';
+        
+        // Level 1 sight words (most common)
+        const sightWords = [
+            'the', 'and', 'is', 'it', 'to', 'in', 'he', 'was', 'for', 'on',
+            'are', 'as', 'with', 'his', 'they', 'at', 'be', 'this', 'from', 'or',
+            'have', 'an', 'had', 'by', 'not', 'but', 'what', 'all', 'were', 'when',
+            'we', 'there', 'can', 'said', 'each', 'she', 'do', 'how', 'if', 'will'
+        ];
+
+        // Similar looking words for distractors
+        const similarWords = {
+            'the': ['they', 'then', 'there'],
+            'and': ['an', 'add', 'end'],
+            'is': ['it', 'in', 'if'],
+            'it': ['is', 'if', 'at'],
+            'to': ['too', 'two', 'do'],
+            'in': ['is', 'it', 'an'],
+            'he': ['she', 'be', 'we'],
+            'was': ['saw', 'has', 'as'],
+            'for': ['from', 'for', 'four'],
+            'on': ['or', 'no', 'an'],
+            'are': ['as', 'or', 'at'],
+            'as': ['at', 'an', 'is'],
+            'with': ['will', 'wish', 'what'],
+            'his': ['has', 'is', 'him'],
+            'they': ['the', 'then', 'there'],
+            'at': ['as', 'an', 'it'],
+            'be': ['by', 'he', 'we'],
+            'this': ['that', 'the', 'thus'],
+            'from': ['for', 'form', 'farm'],
+            'or': ['on', 'of', 'our'],
+            'have': ['has', 'gave', 'hive'],
+            'an': ['and', 'as', 'at'],
+            'had': ['has', 'bad', 'dad'],
+            'by': ['be', 'buy', 'my'],
+            'not': ['no', 'now', 'got'],
+            'but': ['bat', 'put', 'cut'],
+            'what': ['that', 'with', 'when'],
+            'all': ['at', 'as', 'ill'],
+            'were': ['where', 'we', 'here'],
+            'when': ['then', 'what', 'where'],
+            'we': ['be', 'he', 'me'],
+            'there': ['where', 'they', 'here'],
+            'can': ['cat', 'car', 'cap'],
+            'said': ['sad', 'say', 'laid'],
+            'each': ['beach', 'teach', 'reach'],
+            'she': ['he', 'the', 'see'],
+            'do': ['to', 'go', 'so'],
+            'how': ['now', 'cow', 'who'],
+            'if': ['is', 'it', 'in'],
+            'will': ['with', 'well', 'wall']
+        };
+
+        let progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            completions: 0, bestScore: 0, currentStreak: 0, history: [], missedWords: {}
+        };
+
+        let questions = [];
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let totalQuestions = 20;
+        let currentMissed = [];
+
+        updateStatsDisplay();
+
+        function updateStatsDisplay() {
+            document.getElementById('completions').textContent = progress.completions;
+            document.getElementById('bestScore').textContent = progress.bestScore > 0 ? progress.bestScore + '%' : '-';
+            document.getElementById('streak').textContent = progress.currentStreak + ' 🔥';
+            
+            let mastery = '🔴';
+            if (progress.completions >= 10 && progress.bestScore >= 90) mastery = '🟢';
+            else if (progress.completions > 0) mastery = '🟡';
+            document.getElementById('mastery').textContent = mastery;
+
+            let historyHTML = '';
+            progress.history.slice(-10).reverse().forEach((h, i) => {
+                historyHTML += `<div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    Attempt ${progress.history.length - i}: ${h.score}% (${h.correct}/${h.total}) - ${h.date}
+                </div>`;
+            });
+            document.getElementById('historyList').innerHTML = historyHTML || 'No attempts yet.';
+
+            // Show most missed words
+            const missedEntries = Object.entries(progress.missedWords).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            let missedHTML = missedEntries.length ? missedEntries.map(([word, count]) => 
+                `<span style="display:inline-block; background:rgba(255,107,107,0.2); padding:5px 15px; margin:5px; border-radius:20px;">${word} (missed ${count}x)</span>`
+            ).join('') : 'None yet - great job!';
+            document.getElementById('missedWords').innerHTML = missedHTML;
+        }
+
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+            if (section === 'test') startTest();
+        }
+
+        function generateQuestions() {
+            questions = [];
+            // Pick 20 random sight words
+            const shuffled = [...sightWords].sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+            
+            shuffled.forEach(word => {
+                // Get distractors
+                let distractors = similarWords[word] || [];
+                // Add random other sight words as distractors if needed
+                while (distractors.length < 3) {
+                    const randomWord = sightWords[Math.floor(Math.random() * sightWords.length)];
+                    if (randomWord !== word && !distractors.includes(randomWord)) {
+                        distractors.push(randomWord);
+                    }
+                }
+                distractors = distractors.slice(0, 3);
+                
+                // Create options array with correct answer and distractors
+                let options = [word, ...distractors].sort(() => Math.random() - 0.5);
+                
+                questions.push({ word, options });
+            });
+        }
+
+        function startTest() {
+            generateQuestions();
+            currentQuestion = 0;
+            correctAnswers = 0;
+            currentMissed = [];
+            document.getElementById('totalQ').textContent = totalQuestions;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= totalQuestions) { finishTest(); return; }
+            
+            const q = questions[currentQuestion];
+            document.getElementById('targetWord').textContent = q.word;
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = (currentQuestion / totalQuestions * 100) + '%';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+            
+            // Generate option buttons
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = q.options.map(opt => 
+                `<button class="option-btn" onclick="checkAnswer('${opt}')">${opt}</button>`
+            ).join('');
+        }
+
+        function checkAnswer(selected) {
+            const q = questions[currentQuestion];
+            const feedback = document.getElementById('feedback');
+            const buttons = document.querySelectorAll('.option-btn');
+            
+            // Disable all buttons
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === q.word) {
+                    btn.classList.add('correct');
+                } else if (btn.textContent === selected && selected !== q.word) {
+                    btn.classList.add('wrong');
+                }
+            });
+            
+            if (selected === q.word) {
+                correctAnswers++;
+                feedback.textContent = '✅ Correct! Good reading!';
+                feedback.className = 'feedback correct';
+            } else {
+                currentMissed.push(q.word);
+                feedback.textContent = `❌ That word is "${selected}". The word shown was "${q.word}"`;
+                feedback.className = 'feedback wrong';
+            }
+            feedback.style.display = 'block';
+            
+            setTimeout(() => { currentQuestion++; showQuestion(); }, 2000);
+        }
+
+        function finishTest() {
+            const score = Math.round(correctAnswers / totalQuestions * 100);
+            progress.completions++;
+            if (score > progress.bestScore) progress.bestScore = score;
+            progress.currentStreak = score >= 90 ? progress.currentStreak + 1 : 0;
+            
+            // Track missed words
+            currentMissed.forEach(word => {
+                progress.missedWords[word] = (progress.missedWords[word] || 0) + 1;
+            });
+            
+            progress.history.push({
+                score: score, correct: correctAnswers, total: totalQuestions,
+                date: new Date().toLocaleDateString()
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            updateStatsDisplay();
+            
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = score + '%';
+            finalScore.className = score >= 90 ? 'final-score' : 'final-score needs-work';
+            
+            let message = '';
+            if (score === 100) message = '🏆 PERFECT! You know all these words!';
+            else if (score >= 90) message = '🌟 Excellent! Keep reading!';
+            else if (score >= 70) message = '👍 Good! Review the missed words.';
+            else message = '📚 Go back and study the word list again!';
+            document.getElementById('finalMessage').textContent = message;
+            
+            showSection('results');
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure? This will erase all your progress on this test.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                progress = { completions: 0, bestScore: 0, currentStreak: 0, history: [], missedWords: {} };
+                updateStatsDisplay();
+                document.getElementById('finalScore').textContent = '--%';
+                document.getElementById('finalMessage').textContent = 'Progress reset. Start fresh!';
+            }
+        }
+    </script>
+</body>
+</html>
