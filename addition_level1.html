@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addition Level 1: Adding 1 and 2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00d9ff;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0,217,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        .streak {
+            color: #ff6b35 !important;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .tab.active {
+            background: #00d9ff;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+        .section {
+            display: none;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+        }
+        .section.active {
+            display: block;
+        }
+        /* LEARN SECTION */
+        .lesson-box {
+            background: rgba(0,217,255,0.1);
+            border-left: 4px solid #00d9ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+        .lesson-title {
+            color: #00d9ff;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        .lesson-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #e0e0e0;
+        }
+        .example-box {
+            background: #2a2a4a;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .example-problem {
+            font-size: 2.5rem;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        .example-explain {
+            color: #aaa;
+            font-size: 1rem;
+        }
+        .tip-box {
+            background: rgba(255,107,53,0.2);
+            border-left: 4px solid #ff6b35;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+        .tip-box strong {
+            color: #ff6b35;
+        }
+        /* TEST SECTION */
+        .question-area {
+            text-align: center;
+            padding: 30px 0;
+        }
+        .problem {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        .problem .operator {
+            color: #00d9ff;
+        }
+        .answer-input {
+            font-size: 3rem;
+            width: 150px;
+            text-align: center;
+            padding: 15px;
+            border: 3px solid #00d9ff;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0,255,136,0.3);
+        }
+        .submit-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background: #00d9ff;
+            color: #1a1a2e;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .submit-btn:hover {
+            background: #00ff88;
+            transform: scale(1.05);
+        }
+        .feedback {
+            font-size: 1.5rem;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .feedback.correct {
+            display: block;
+            background: rgba(0,255,136,0.2);
+            color: #00ff88;
+        }
+        .feedback.wrong {
+            display: block;
+            background: rgba(255,59,59,0.2);
+            color: #ff3b3b;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            transition: width 0.3s;
+        }
+        .question-count {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        /* RESULTS */
+        .results-box {
+            text-align: center;
+            padding: 30px;
+        }
+        .final-score {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        .final-score.needs-work {
+            color: #ff6b35;
+        }
+        .final-message {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+        .retry-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #ff6b35;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 10px;
+        }
+        .retry-btn:hover {
+            background: #ff8c5a;
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.1);
+            color: #aaa;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        .number-line {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .number-line span {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            font-size: 0.9rem;
+        }
+        .number-line span.highlight {
+            background: #00d9ff;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+        .number-line span.jump {
+            background: #00ff88;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Addition Level 1</h1>
+        <p style="text-align:center; color:#aaa; margin-bottom:20px;">Adding 1 and 2</p>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-value" id="completions">0</div>
+                <div class="stat-label">Times Completed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="bestScore">-</div>
+                <div class="stat-label">Best Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value streak" id="streak">0 🔥</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="mastery">🔴</div>
+                <div class="stat-label">Mastery</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('learn')">📚 Learn First</button>
+            <button class="tab" onclick="showSection('test')">✏️ Take Test</button>
+            <button class="tab" onclick="showSection('results')">📊 My Progress</button>
+        </div>
+
+        <!-- LEARN SECTION -->
+        <div id="learn" class="section active">
+            <div class="lesson-box">
+                <div class="lesson-title">🎯 What You'll Learn</div>
+                <div class="lesson-text">
+                    Today we're learning to add <strong>1</strong> and <strong>2</strong> to any number.<br><br>
+                    These are the easiest addition facts. Once you know these perfectly, everything else gets easier!
+                </div>
+            </div>
+
+            <div class="lesson-box">
+                <div class="lesson-title">➕ Adding 1</div>
+                <div class="lesson-text">
+                    <strong>Adding 1 means: Go to the NEXT number.</strong><br><br>
+                    That's it! When you add 1, you just count up by one.
+                </div>
+                <div class="example-box">
+                    <div class="example-problem">5 + 1 = 6</div>
+                    <div class="example-explain">5... then the next number is 6!</div>
+                    <div class="number-line">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                        <span class="highlight">5</span><span class="jump">6</span>
+                        <span>7</span><span>8</span><span>9</span><span>10</span>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <div class="example-problem">8 + 1 = 9</div>
+                    <div class="example-explain">8... then the next number is 9!</div>
+                </div>
+            </div>
+
+            <div class="lesson-box">
+                <div class="lesson-title">➕ Adding 2</div>
+                <div class="lesson-text">
+                    <strong>Adding 2 means: Skip ONE number, land on the next.</strong><br><br>
+                    Or think of it as: Add 1... then add 1 again.
+                </div>
+                <div class="example-box">
+                    <div class="example-problem">5 + 2 = 7</div>
+                    <div class="example-explain">5... skip 6... land on 7!</div>
+                    <div class="number-line">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                        <span class="highlight">5</span><span>6</span><span class="jump">7</span>
+                        <span>8</span><span>9</span><span>10</span>
+                    </div>
+                </div>
+                <div class="example-box">
+                    <div class="example-problem">3 + 2 = 5</div>
+                    <div class="example-explain">3... skip 4... land on 5!</div>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Pro Tip:</strong> You don't need to count on your fingers! Just remember:<br>
+                • +1 = next number<br>
+                • +2 = skip one, land on next
+            </div>
+
+            <button class="submit-btn" onclick="showSection('test')" style="margin-top:30px;">
+                I'm Ready to Practice! →
+            </button>
+        </div>
+
+        <!-- TEST SECTION -->
+        <div id="test" class="section">
+            <div class="question-count">Question <span id="currentQ">1</span> of <span id="totalQ">15</span></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+            
+            <div class="question-area">
+                <div class="problem">
+                    <span id="num1">5</span> <span class="operator">+</span> <span id="num2">1</span> <span class="operator">=</span> <span class="operator">?</span>
+                </div>
+                <input type="number" class="answer-input" id="answerInput" autofocus>
+                <button class="submit-btn" onclick="checkAnswer()">Check Answer</button>
+                <div class="feedback" id="feedback"></div>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="results" class="section">
+            <div class="results-box">
+                <div class="final-score" id="finalScore">--%</div>
+                <div class="final-message" id="finalMessage">Complete a test to see your results!</div>
+                <button class="retry-btn" onclick="startTest()">🔄 Take Test Again</button>
+                
+                <div style="margin-top:40px; text-align:left;">
+                    <h3 style="color:#00d9ff; margin-bottom:15px;">📈 Your History</h3>
+                    <div id="historyList" style="color:#aaa;"></div>
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage key for this specific test
+        const STORAGE_KEY = 'addition_level1_progress';
+        
+        // Load saved progress
+        let progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+            completions: 0,
+            bestScore: 0,
+            currentStreak: 0,
+            history: []
+        };
+
+        // Test state
+        let questions = [];
+        let currentQuestion = 0;
+        let correctAnswers = 0;
+        let totalQuestions = 15;
+
+        // Initialize display
+        updateStatsDisplay();
+
+        function updateStatsDisplay() {
+            document.getElementById('completions').textContent = progress.completions;
+            document.getElementById('bestScore').textContent = progress.bestScore > 0 ? progress.bestScore + '%' : '-';
+            document.getElementById('streak').textContent = progress.currentStreak + ' 🔥';
+            
+            // Mastery: 10+ completions with 90%+ best score
+            let mastery = '🔴';
+            if (progress.completions >= 10 && progress.bestScore >= 90) {
+                mastery = '🟢';
+            } else if (progress.completions > 0) {
+                mastery = '🟡';
+            }
+            document.getElementById('mastery').textContent = mastery;
+
+            // Update history
+            let historyHTML = '';
+            progress.history.slice(-10).reverse().forEach((h, i) => {
+                historyHTML += `<div style="padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.1);">
+                    Attempt ${progress.history.length - i}: ${h.score}% (${h.correct}/${h.total}) - ${h.date}
+                </div>`;
+            });
+            document.getElementById('historyList').innerHTML = historyHTML || 'No attempts yet.';
+        }
+
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(section).classList.add('active');
+            document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+            
+            // Start test if switching to test
+            if (section === 'test') {
+                startTest();
+            }
+        }
+
+        function generateQuestions() {
+            questions = [];
+            // Generate +1 problems (0-10)
+            for (let i = 0; i <= 10; i++) {
+                questions.push({ num1: i, num2: 1 });
+            }
+            // Generate +2 problems (0-10)
+            for (let i = 0; i <= 10; i++) {
+                questions.push({ num1: i, num2: 2 });
+            }
+            // Also add reverse (2+5 same as 5+2)
+            for (let i = 3; i <= 10; i++) {
+                questions.push({ num1: 1, num2: i });
+                questions.push({ num1: 2, num2: i });
+            }
+            
+            // Shuffle and pick 15
+            questions = questions.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+        }
+
+        function startTest() {
+            generateQuestions();
+            currentQuestion = 0;
+            correctAnswers = 0;
+            document.getElementById('totalQ').textContent = totalQuestions;
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion >= totalQuestions) {
+                finishTest();
+                return;
+            }
+            
+            const q = questions[currentQuestion];
+            document.getElementById('num1').textContent = q.num1;
+            document.getElementById('num2').textContent = q.num2;
+            document.getElementById('currentQ').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = (currentQuestion / totalQuestions * 100) + '%';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        function checkAnswer() {
+            const q = questions[currentQuestion];
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const correctAnswer = q.num1 + q.num2;
+            const feedback = document.getElementById('feedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = '⚠️ Please enter a number!';
+                feedback.className = 'feedback wrong';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            if (userAnswer === correctAnswer) {
+                correctAnswers++;
+                feedback.textContent = '✅ Correct! Great job!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedback.textContent = `❌ Not quite. ${q.num1} + ${q.num2} = ${correctAnswer}`;
+                feedback.className = 'feedback wrong';
+            }
+            feedback.style.display = 'block';
+            
+            // Move to next question after delay
+            setTimeout(() => {
+                currentQuestion++;
+                showQuestion();
+            }, 1500);
+        }
+
+        function finishTest() {
+            const score = Math.round(correctAnswers / totalQuestions * 100);
+            
+            // Update progress
+            progress.completions++;
+            if (score > progress.bestScore) {
+                progress.bestScore = score;
+            }
+            if (score >= 90) {
+                progress.currentStreak++;
+            } else {
+                progress.currentStreak = 0;
+            }
+            progress.history.push({
+                score: score,
+                correct: correctAnswers,
+                total: totalQuestions,
+                date: new Date().toLocaleDateString()
+            });
+            
+            // Save progress
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+            updateStatsDisplay();
+            
+            // Show results
+            const finalScore = document.getElementById('finalScore');
+            finalScore.textContent = score + '%';
+            finalScore.className = score >= 90 ? 'final-score' : 'final-score needs-work';
+            
+            let message = '';
+            if (score === 100) {
+                message = '🏆 PERFECT! You are a math champion!';
+            } else if (score >= 90) {
+                message = '🌟 Excellent! You\'ve got this!';
+            } else if (score >= 70) {
+                message = '👍 Good effort! Practice more to get faster.';
+            } else {
+                message = '📚 Go back and review the lesson, then try again!';
+            }
+            document.getElementById('finalMessage').textContent = message;
+            
+            showSection('results');
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure? This will erase all your progress on this test.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                progress = { completions: 0, bestScore: 0, currentStreak: 0, history: [] };
+                updateStatsDisplay();
+                document.getElementById('finalScore').textContent = '--%';
+                document.getElementById('finalMessage').textContent = 'Progress reset. Start fresh!';
+            }
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
